@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'  # 修正：Node.js 20 已废弃，换用 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Show what folders exist (调试用)
+        run: ls -la
+      
+      - name: Show dist folder if exists (调试用)
+        run: ls -la dist || echo "dist 文件夹不存在"
+        
+      - name: Show build folder if exists (调试用)
+        run: ls -la build || echo "build 文件夹不存在"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-files
+          path: |
+            dist/
+            build/
+            public/
+            ./
